@@ -1,22 +1,51 @@
-import React from "react";
-import { Routes, Route } from "react-router-dom";
-import NavBar from "./NavBar";
+import React, { useState } from "react";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
 import Dashboard from "./components/Dashboard";
 import UserManagement from "./components/UserManagement";
 import RoleManagement from "./components/RoleManagement";
-import Permissions from "./components/Permissions";
 
 const App = () => {
+  const [totalUsers, setTotalUsers] = useState(0);
+  const [roles, setRoles] = useState([
+    { id: 1, name: "Admin", permissions: ["Read", "Write", "Execute"], active: true },
+    { id: 2, name: "Editor", permissions: ["Read", "Write"], active: true },
+  ]);
+
+  const addRole = (newRole) => setRoles([...roles, newRole]);
+
   return (
-    <div>
-      <NavBar />
-      <Routes>
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/user-management" element={<UserManagement />} />
-        <Route path="/role-management" element={<RoleManagement />} />
-        <Route path="/permissions" element={<Permissions />} />
-      </Routes>
-    </div>
+    <Router>
+      <Box>
+        {/* Navbar */}
+        <AppBar position="static">
+          <Toolbar>
+            <Typography variant="h6" sx={{ flexGrow: 1 }}>
+              RBAC Dashboard
+            </Typography>
+            <Button color="inherit" component={Link} to="/">
+              Dashboard
+            </Button>
+            <Button color="inherit" component={Link} to="/users">
+              User Management
+            </Button>
+            <Button color="inherit" component={Link} to="/roles">
+              Role Management
+            </Button>
+          </Toolbar>
+        </AppBar>
+
+        {/* Routes */}
+        <Routes>
+          <Route path="/" element={<Dashboard totalUsers={totalUsers} roles={roles} />} />
+          <Route
+            path="/users"
+            element={<UserManagement roles={roles} totalUsers={totalUsers} setTotalUsers={setTotalUsers} />}
+          />
+          <Route path="/roles" element={<RoleManagement roles={roles} addRole={addRole} />} />
+        </Routes>
+      </Box>
+    </Router>
   );
 };
 

@@ -1,28 +1,20 @@
 import React from "react";
-import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
+import { AppBar, Toolbar, Button, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 
 const Navbar = () => {
   return (
-    <AppBar position="static">
+    <AppBar position="sticky">
       <Toolbar>
         <Typography variant="h6" style={{ flexGrow: 1 }}>
           RBAC Dashboard
         </Typography>
-        <Box display="flex">
-          <Button color="inherit" component={Link} to="/">
-            Dashboard
-          </Button>
-          <Button color="inherit" component={Link} to="/users">
-            User Management
-          </Button>
-          <Button color="inherit" component={Link} to="/roles">
-            Role Management
-          </Button>
-          <Button color="inherit" component={Link} to="/settings">
-            Settings
-          </Button>
-        </Box>
+        <Button color="inherit" component={Link} to="/dashboard">
+          Dashboard
+        </Button>
+        <Button color="inherit" component={Link} to="/user-management">
+          User Management
+        </Button>
       </Toolbar>
     </AppBar>
   );
