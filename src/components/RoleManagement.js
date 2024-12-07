@@ -15,7 +15,7 @@ import {
   FormControlLabel,
 } from "@mui/material";
 
-const RoleManagement = ({ roles, addRole }) => {
+const RoleManagement = ({ roles, addRole, deleteRole }) => {
   const [open, setOpen] = useState(false);
   const [newRole, setNewRole] = useState({ name: "", permissions: [], active: false });
 
@@ -90,6 +90,14 @@ const RoleManagement = ({ roles, addRole }) => {
                 <Typography variant="h6">{role.name}</Typography>
                 <Typography>Permissions: {role.permissions.join(", ")}</Typography>
                 <Typography>{role.active ? "Active" : "Inactive"}</Typography>
+                <Button 
+                  variant="outlined" 
+                  color="error" 
+                  onClick={() => deleteRole(role.id)}
+                  sx={{ marginTop: 2 }}
+                >
+                  Delete Role
+                </Button>
               </CardContent>
             </Card>
           </Grid>

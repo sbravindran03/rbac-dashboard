@@ -1,7 +1,10 @@
 import React from "react";
 import { Typography, Grid, Card, CardContent } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = ({ totalUsers, roles }) => {
+  const navigate = useNavigate();
+
   return (
     <div style={{ padding: "20px" }}>
       <Typography variant="h4" gutterBottom>
@@ -13,7 +16,10 @@ const Dashboard = ({ totalUsers, roles }) => {
 
       <Grid container spacing={3} style={{ marginTop: "20px" }}>
         <Grid item xs={12} md={6}>
-          <Card>
+          <Card 
+            sx={{ cursor: 'pointer' }}
+            onClick={() => navigate('/users')}
+          >
             <CardContent>
               <Typography variant="h6">Total Users</Typography>
               <Typography variant="h4" style={{ marginTop: "10px" }}>
