@@ -6,7 +6,6 @@ import UserManagement from "./components/UserManagement";
 import RoleManagement from "./components/RoleManagement";
 
 const App = () => {
-  const [totalUsers, setTotalUsers] = useState(0);
   const [roles, setRoles] = useState([
     { id: 1, name: "Admin", permissions: ["Read", "Write", "Execute"], active: true },
     { id: 2, name: "Editor", permissions: ["Read", "Write"], active: true },
@@ -20,10 +19,13 @@ const App = () => {
 
   const addRole = (newRole) => setRoles([...roles, newRole]);
 
+  const deleteRole = (roleId) => {
+    setRoles(roles.filter((role) => role.id !== roleId));
+  };
+
   return (
     <Router>
       <Box>
-        {/* Navbar */}
         <AppBar position="static">
           <Toolbar>
             <Typography variant="h6" sx={{ flexGrow: 1 }}>
@@ -41,14 +43,16 @@ const App = () => {
           </Toolbar>
         </AppBar>
 
-        {/* Routes */}
         <Routes>
           <Route path="/" element={<Dashboard totalUsers={users.length} roles={roles} />} />
           <Route
             path="/users"
             element={<UserManagement roles={roles} users={users} setUsers={setUsers} />}
           />
-          <Route path="/roles" element={<RoleManagement roles={roles} addRole={addRole} />} />
+          <Route
+            path="/roles"
+            element={<RoleManagement roles={roles} addRole={addRole} deleteRole={deleteRole} />}
+          />
         </Routes>
       </Box>
     </Router>
