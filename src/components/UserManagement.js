@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Typography,
   Grid,
@@ -17,22 +17,10 @@ import {
   MenuItem,
 } from "@mui/material";
 
-const UserManagement = ({ roles }) => {
-  const [users, setUsers] = useState([]);
+const UserManagement = ({ roles, users, setUsers }) => {
   const [newUser, setNewUser] = useState({ name: "", role: "" });
   const [editingUser, setEditingUser] = useState(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
-
-  // Load users from local storage on component mount
-  useEffect(() => {
-    const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
-    setUsers(storedUsers);
-  }, []);
-
-  // Save users to local storage whenever the users state changes
-  useEffect(() => {
-    localStorage.setItem("users", JSON.stringify(users));
-  }, [users]);
 
   // Add a new user
   const addUser = (name, role) => {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
 import Dashboard from "./components/Dashboard";
@@ -11,6 +11,12 @@ const App = () => {
     { id: 1, name: "Admin", permissions: ["Read", "Write", "Execute"], active: true },
     { id: 2, name: "Editor", permissions: ["Read", "Write"], active: true },
   ]);
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
+    setUsers(storedUsers);
+  }, []);
 
   const addRole = (newRole) => setRoles([...roles, newRole]);
 
@@ -37,10 +43,10 @@ const App = () => {
 
         {/* Routes */}
         <Routes>
-          <Route path="/" element={<Dashboard totalUsers={totalUsers} roles={roles} />} />
+          <Route path="/" element={<Dashboard totalUsers={users.length} roles={roles} />} />
           <Route
             path="/users"
-            element={<UserManagement roles={roles} totalUsers={totalUsers} setTotalUsers={setTotalUsers} />}
+            element={<UserManagement roles={roles} users={users} setUsers={setUsers} />}
           />
           <Route path="/roles" element={<RoleManagement roles={roles} addRole={addRole} />} />
         </Routes>

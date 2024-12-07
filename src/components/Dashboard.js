@@ -23,7 +23,7 @@ const Dashboard = ({ totalUsers, roles }) => {
             <CardContent>
               <Typography variant="h6">Total Users</Typography>
               <Typography variant="h4" style={{ marginTop: "10px" }}>
-                {totalUsers}
+                {totalUsers}.
               </Typography>
             </CardContent>
           </Card>
