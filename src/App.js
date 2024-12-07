@@ -14,10 +14,6 @@ const App = () => {
 
   const addRole = (newRole) => setRoles([...roles, newRole]);
 
-  const deleteRole = (roleId) => {
-    setRoles(roles.filter(role => role.id !== roleId));
-  };
-
   return (
     <Router>
       <Box>
@@ -46,7 +42,7 @@ const App = () => {
             path="/users"
             element={<UserManagement roles={roles} totalUsers={totalUsers} setTotalUsers={setTotalUsers} />}
           />
-          <Route path="/roles" element={<RoleManagement roles={roles} addRole={addRole} deleteRole={deleteRole} />} />
+          <Route path="/roles" element={<RoleManagement roles={roles} addRole={addRole} />} />
         </Routes>
       </Box>
     </Router>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Typography,
   Grid,
@@ -7,27 +7,59 @@ import {
   Button,
   TextField,
   Box,
-  MenuItem,
-  Select,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
   FormControl,
   InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
 
-const UserManagement = ({ roles, totalUsers, setTotalUsers }) => {
+const UserManagement = ({ roles }) => {
   const [users, setUsers] = useState([]);
-  const [newUser, setNewUser] = useState("");
-  const [selectedRole, setSelectedRole] = useState("");
+  const [newUser, setNewUser] = useState({ name: "", role: "" });
+  const [editingUser, setEditingUser] = useState(null);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
 
+  // Load users from local storage on component mount
+  useEffect(() => {
+    const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
+    setUsers(storedUsers);
+  }, []);
+
+  // Save users to local storage whenever the users state changes
+  useEffect(() => {
+    localStorage.setItem("users", JSON.stringify(users));
+  }, [users]);
+
+  // Add a new user
   const addUser = (name, role) => {
     setUsers([...users, { id: Date.now(), name, role }]);
-    setTotalUsers(totalUsers + 1);
-    setNewUser("");
-    setSelectedRole("");
+    setNewUser({ name: "", role: "" });
   };
 
+  // Delete a user
   const removeUser = (id) => {
     setUsers(users.filter((user) => user.id !== id));
-    setTotalUsers(totalUsers - 1);
+  };
+
+  // Open edit dialog
+  const handleEditClick = (user) => {
+    setEditingUser(user);
+    setEditDialogOpen(true);
+  };
+
+  // Save edited user details
+  const saveEditedUser = () => {
+    setUsers(
+      users.map((user) =>
+        user.id === editingUser.id ? editingUser : user
+      )
+    );
+    setEditDialogOpen(false);
+    setEditingUser(null);
   };
 
   return (
@@ -36,18 +68,28 @@ const UserManagement = ({ roles, totalUsers, setTotalUsers }) => {
         User Management
       </Typography>
 
-      <Box sx={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "20px" }}>
+      <Typography variant="h6" gutterBottom>
+        Total Users: {users.length}
+      </Typography>
+
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: "10px",
+          marginBottom: "20px",
+        }}
+      >
         <TextField
           label="User Name"
-          value={newUser}
-          onChange={(e) => setNewUser(e.target.value)}
+          value={newUser.name}
+          onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
         />
         <FormControl sx={{ minWidth: 120 }}>
           <InputLabel>Role</InputLabel>
           <Select
-            value={selectedRole}
-            onChange={(e) => setSelectedRole(e.target.value)}
-            displayEmpty
+            value={newUser.role}
+            onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
           >
             {roles.map((role) => (
               <MenuItem key={role.id} value={role.name}>
@@ -60,8 +102,8 @@ const UserManagement = ({ roles, totalUsers, setTotalUsers }) => {
           variant="contained"
           color="primary"
           onClick={() => {
-            if (newUser && selectedRole) {
-              addUser(newUser, selectedRole);
+            if (newUser.name && newUser.role) {
+              addUser(newUser.name, newUser.role);
             } else {
               alert("Please provide a username and select a role!");
             }
@@ -78,19 +120,71 @@ const UserManagement = ({ roles, totalUsers, setTotalUsers }) => {
               <CardContent>
                 <Typography variant="h6">{user.name}</Typography>
                 <Typography>Role: {user.role}</Typography>
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  onClick={() => removeUser(user.id)}
-                  sx={{ marginTop: "10px" }}
-                >
-                  Remove
-                </Button>
+                <Box sx={{ marginTop: "10px", display: "flex", gap: "10px" }}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => handleEditClick(user)}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={() => removeUser(user.id)}
+                  >
+                    Delete
+                  </Button>
+                </Box>
               </CardContent>
             </Card>
           </Grid>
         ))}
       </Grid>
+
+      {/* Edit User Dialog */}
+      <Dialog
+        open={editDialogOpen}
+        onClose={() => setEditDialogOpen(false)}
+      >
+        <DialogTitle>Edit User</DialogTitle>
+        <DialogContent>
+          <TextField
+            label="Name"
+            fullWidth
+            value={editingUser?.name || ""}
+            onChange={(e) =>
+              setEditingUser({ ...editingUser, name: e.target.value })
+            }
+            sx={{ marginBottom: "10px" }}
+          />
+          <FormControl fullWidth>
+            <InputLabel>Role</InputLabel>
+            <Select
+              value={editingUser?.role || ""}
+              onChange={(e) =>
+                setEditingUser({ ...editingUser, role: e.target.value })
+              }
+            >
+              {roles.map((role) => (
+                <MenuItem key={role.id} value={role.name}>
+                  {role.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setEditDialogOpen(false)}>Cancel</Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={saveEditedUser}
+          >
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
