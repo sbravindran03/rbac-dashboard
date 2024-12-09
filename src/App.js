@@ -11,7 +11,7 @@ const App = () => {
     { id: 2, name: "Editor", permissions: ["Read", "Write"], active: true },
   ]);
   const [users, setUsers] = useState([]);
-
+//
   useEffect(() => {
     const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
     setUsers(storedUsers);
